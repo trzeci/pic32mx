@@ -35,16 +35,16 @@ Building:
 - cd test && ./cc.sh
   It creates uploadable tests to processor using programmer.
 
-  test00_blink    simply blinks LED, update .cc file with LED's port/pin numbers.
-  test01_piclib   simple check of hardware library - it blinks LED,
+  * test00_blink    simply blinks LED, update .cc file with LED's port/pin numbers.
+  * test01_piclib   simple check of hardware library - it blinks LED,
                   but using C++ objects
-  test02_uart     sets uart as stdout in libc, blinks LED and writes messages to uart
-  test03_libc     prints using printf, stdout is configured using function called from c0.S bootstrap,
+  * test02_uart     sets uart as stdout in libc, blinks LED and writes messages to uart
+  * test03_libc     prints using printf, stdout is configured using function called from c0.S bootstrap,
                   before anything created in C++. Configuration on LED and uart is in libc.cc .
-  test04_stl      test of STL: std::map, virtuals, dynamic new/delete, std::cout
-  test05_exc      test of exceptions handling
-  test06_fpu      check of soft-float library
-  test07_isr      test of ISR using Timer1
+  * test04_stl      test of STL: std::map, virtuals, dynamic new/delete, std::cout
+  * test05_exc      test of exceptions handling
+  * test06_fpu      check of soft-float library
+  * test07_isr      test of ISR using Timer1
 
 - whole hardware library is enclosed in files:
   pic_hardware.h
