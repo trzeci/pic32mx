@@ -53,6 +53,8 @@ Building:
   core_timer.h
   core_timer.cc
 
+Binaries of gcc toolchain are available at http://www.trzeci.pl/pic32mx-toolchain/mipsel-pic32mx-elf-gcc-11.2.0-220121.tar.xz
+
 Edit:
 - added NVM device
 - there is bootloader in separate directory
