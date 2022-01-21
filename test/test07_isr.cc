@@ -39,8 +39,8 @@ int main()
   ::pic::configureSystemMultVector();
   ::pic::enableInterrupts();
 
-  DelayMs(50);
   puts( "main()" );
+  DelayMs(50);
   {
     ::pic::Timer1.setPrescale256(); // 80Mhz/256 = 312500 Hz
     ::pic::Timer1 = 0;

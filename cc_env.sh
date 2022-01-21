@@ -13,7 +13,7 @@ case "$PROC" in
     C0SFX="MX"
     ;;
   mz)
-    CCOPTS="-D__PIC32MZ__ -DF240 -march=m14kc -mfp64       -mmicromips"
+    CCOPTS="-D__PIC32MZ__ -DF240 -march=m14kc -mfp64       -mips32r2 -mmicromips"
     C0SFX="MZ"
     ;;
 esac

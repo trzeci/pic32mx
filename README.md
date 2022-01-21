@@ -53,9 +53,16 @@ Building:
   core_timer.h
   core_timer.cc
 
+Edit:
+- added NVM device
+- there is bootloader in separate directory
+- and uploader to the bootloader
+- default configuration is to generate application under the bootloader
+- you have to use -Wl,--defsym=STANDALONE=1 in a linking phase (important: the defsym must be placed before linking script)
+  if wanted to omit bootloader
+
 Plans:
 - the toolchain works with FreeRTOS 10.3, will upload after cleaning
-- simplest possible bootloader on UART
 - classes to manage I2C
 - CAN
 - port to PIC32MZ series

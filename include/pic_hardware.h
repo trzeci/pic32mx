@@ -864,10 +864,13 @@ namespace pic
 
     void setBaudRate( uint32_t baudrate )
     {
-      if( mode.BRGH )
-       ubrg = Fpb/(4*baudrate)-1;
-      else
-       ubrg = Fpb/(16*baudrate)-1;
+      ubrg = mode.BRGH ? Fpb/(4*baudrate)-1 : Fpb/(16*baudrate)-1;
+    }
+
+    void setBaudRate( bool hiSpd, uint32_t baudrate )
+    {
+      setHighSpeed( hiSpd );
+      ubrg = hiSpd ? Fpb/(4*baudrate)-1 : Fpb/(16*baudrate)-1;
     }
 
     void start()
@@ -2121,6 +2124,93 @@ namespace pic
       return status;
     }
   };
+
+
+  struct Flash
+  {
+    volatile union CON
+    {
+      struct
+      {
+        uint32_t NVMOP:4;
+#if __PIC32MX__
+        uint32_t :7;
+        uint32_t LVDSTAT:1;
+#elif __PIC32MZ__
+        uint32_t :2;
+        uint32_t BFSWAP:1;
+        uint32_t PFSWAP:1;
+        uint32_t :4;
+#else
+        uint32_t :8;
+#endif
+        uint32_t LVDERR:1;
+        uint32_t WRERR:1;
+        uint32_t WREN:1;
+        uint32_t WR:1;
+      };
+      struct
+      {
+        uint32_t w:32;
+      };
+    } con,conCLR,conSET,conINV;
+
+    volatile uint32_t KEY;
+    volatile uint32_t dummy1[3];
+
+    volatile uint32_t ADDR;
+    volatile uint32_t dummy2[3];
+
+#if __PIC32MX__
+    volatile uint32_t DATA;
+    volatile uint32_t dummy3[3];
+#elif __PIC32MZ__
+    struct
+    {
+      volatile uint32_t DATA;
+      volatile uint32_t dummy[3];
+    } DATA[4];
+#endif
+
+    volatile uint32_t SOURCE_ADDR;
+    volatile uint32_t dummy4[3];
+
+    bool isError() {  return con.LVDERR || con.WRERR;  }
+    bool isWriting() {  return con.WR;  }
+
+#if __PIC32MZ__
+    static constexpr size_t pageSize = 16384;
+    static constexpr size_t rowSize  =  2048;
+#elif __PIC32MX__
+    static constexpr size_t pageSize =  4096;
+    static constexpr size_t rowSize  =   512;
+#endif
+
+    void __attribute__((nomips16)) startOperation( unsigned nvmop )
+    {
+      union CON con0;
+      con0.w = 0;
+      con0.WREN = 1;
+      con0.NVMOP = nvmop;
+      con.w = con0.w;
+      DelayUs(7);
+      KEY = 0xAA996655;
+      KEY = 0x556699AA;
+      con0.w = 0;
+      con0.WR = 1;
+      conSET.w = con0.w;
+    }
+
+    void stop()
+    {
+      union CON con0;
+      con0.w = 0;
+      con0.WREN = 1;
+      conCLR.w = con0.w;
+    }
+
+  };
+  extern Flash NVM;
 
 
 #if __PIC32MX__

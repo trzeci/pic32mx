@@ -1,10 +1,9 @@
 ENTRY(_reset)
 
-ROMADDR = 0x9D000000;
+ROMADDR = DEFINED(BOOTLOAD) ? 0x9FC00000 : 0x9D000000;
 RAMADDR = 0x80000000;
 
-RESET_ADDR = 0xBFC00000;
-/*RESET_ADDR = ROMADDR;*/
+RESET_ADDR = ( DEFINED(BOOTLOAD) || DEFINED(STANDALONE) ) ? 0x9FC00000 : ROMADDR;
 
 PROVIDE(_ebase_address = ROMADDR + 0x1000);
 PROVIDE(_stack = RAMADDR+RAMLEN-0x10);
@@ -13,7 +12,7 @@ MEMORY
 {
   kseg0_boot_mem           : ORIGIN = RESET_ADDR,         LENGTH = 0x0480
   kseg0_boot_mem_4B0       : ORIGIN = RESET_ADDR+0x04B0,  LENGTH = 0x0800-0x04B0
-  rom                (rx)  : ORIGIN = ROMADDR    +0x1000, LENGTH = ROMLEN-0x1000
+  rom                (rx)  : ORIGIN = ROMADDR    +0x1000, LENGTH = ( DEFINED(BOOTLOAD) ? BOOTLEN : ROMLEN ) -0x1000
   ram               (w!x)  : ORIGIN = RAMADDR,            LENGTH = RAMLEN
   invalid                  : ORIGIN = 0,                  LENGTH = 0
   devcfg                   : ORIGIN = 0xBFC02FF0,         LENGTH = 0x10

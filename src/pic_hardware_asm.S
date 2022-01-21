@@ -164,6 +164,8 @@
     glob( _ZN3pic9BusMatrixE, 0xBF882000 )
   #endif
 
+  glob( _ZN3pic3NVME, 0xBF80F400 )
+
 #elif __PIC32MZ__
 
   #ifdef _PORTA
@@ -354,6 +356,8 @@
   #ifdef _ADCHS
   // todo
   #endif
+
+  glob( _ZN3pic3NVME, 0xBF800600 )
 
   glob( _ZN3pic10InterruptsE, 0xBF810000 )
 

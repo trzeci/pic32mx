@@ -1,3 +1,4 @@
+BOOTLEN = 0x3000;
 INCLUDE gcc_32M.ld
 STARTUP( c0_MX.o );
 GROUP( c0_MX.a );

@@ -20,7 +20,7 @@ int main()
   puts("main()");
   for(size_t n=0;n<30;++n)
   {
-    DelayMs(500);
+    DelayMs(100);
     if( m.count(n-10) )
     {
       S *s = m[n-10];
