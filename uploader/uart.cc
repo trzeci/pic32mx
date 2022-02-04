@@ -18,14 +18,14 @@ struct Uart::State : public termios2 {};
 std::shared_ptr<Uart::State> Uart::getState()
 {
   std::shared_ptr<Uart::State> p = std::make_shared<Uart::State>();
-  if( ioctl( fd, TCGETS2, &*p ) )
+  if( ioctl( fd, TCGETS2, (termios2*)p.get() ) )
     throw std::string("TCGETS2:") + strerror(errno);
   return p;
 }
 
 void Uart::setState( std::shared_ptr<Uart::State> p )
 {
-  if( ioctl( fd, TCSETS2, &*p ) )
+  if( ioctl( fd, TCSETS2, (termios2*)p.get() ) )
     throw std::string("TCSETS2:") + strerror(errno);
 }
 

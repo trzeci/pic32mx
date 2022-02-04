@@ -6,7 +6,7 @@ static const uint16_t crc_table[16] =
   0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef
 };
 
-uint16_t crc16( uint8_t const *data, size_t len )
+uint16_t crc16( const uint8_t *data, size_t len )
 {
   uint16_t crc = 0;
   while( len-- )

@@ -2038,6 +2038,11 @@ namespace pic
       con.PEN = 1;
     }
 
+    void clrStop()
+    {
+      con.PEN = 0;
+    }
+
     bool receiverEnable( bool enable = true )
     {
       con.RCEN = enable;

@@ -10,6 +10,7 @@
 #include <pic32m.h>
 #include <pic_hardware.h>
 #include "nvmem.h"
+#include "crc16.h"
 
 #if 0 // A18
 
@@ -154,8 +155,6 @@ uint32_t read32()
 }
 
 
-uint16_t calculateCrc( uint8_t *data, uint32_t len );
-
 char page_buffer[::pic::Flash::pageSize];
 
 int main()
@@ -236,7 +235,7 @@ int main()
                         ProgAddress += ::pic::Flash::rowSize;
                         src_addr += ::pic::Flash::rowSize;
                       }
-                      uint16_t crc = calculateCrc( (uint8_t *)PA_TO_KVA0(a), ::pic::Flash::pageSize );
+                      uint16_t crc = crc16( (uint8_t *)PA_TO_KVA0(a), ::pic::Flash::pageSize );
                       putC('C');
                       putC( uint8_t( crc & 0xFFU ) );
                       putC( uint8_t( crc >> 8 ) );
@@ -252,26 +251,4 @@ int main()
     }
   }
   return 0;
-}
-
-
-static const uint16_t crc_table[16] =
-{
-    0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
-    0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef
-};
-
-uint16_t calculateCrc( uint8_t *data, uint32_t len )
-{
-  uint16_t crc = 0;
-  while(len--)
-  {
-    uint16_t i;
-    i = (crc >> 12) ^ (*data >> 4);
-    crc = crc_table[i & 0x0F] ^ (crc << 4);
-    i = (crc >> 12) ^ (*data >> 0);
-    crc = crc_table[i & 0x0F] ^ (crc << 4);
-    data++;
-  }
-  return (crc & 0xFFFF);
 }

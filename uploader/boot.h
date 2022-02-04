@@ -13,7 +13,9 @@ struct BootMgr : public Uart
   uint8_t version=0;
   size_t page_size=0;
 
-  void open( std::string dev = "/dev/ttyUSB0" ) {  Uart::open(dev);  }
+  void open( std::string dev = "/dev/ttyUSB0" );
+  void close();
+
   void changeSpeed( uint32_t spd );
 
   void bootDisable();

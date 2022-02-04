@@ -1,6 +1,6 @@
 #include "uart.h"
 #include "boot.h"
-#include "crc16.h"
+#include "../bootloader/crc16.h"
 #include "readHex.h"
 
 #include <unistd.h>
@@ -12,15 +12,29 @@
 #include <errno.h>
 
 
-BootMgr::~BootMgr()
+void BootMgr::open( std::string dev )
+{
+  if( fd != -1 )
+    close();
+  Uart::open(dev);
+  bootEnable();
+}
+
+void BootMgr::close()
 {
   if( fd != -1 && bootloader_mode )
     bootDisable();
   if( fd != -1 )
   {
     ::tcflush( fd, TCIOFLUSH );
-    //close(); hangs ...
+    ::close( fd );
+    fd = -1;
   }
+}
+
+BootMgr::~BootMgr()
+{
+  close();
 }
 
 
@@ -28,7 +42,7 @@ BootMgr::~BootMgr()
 // SBBBB
 // PBBBB....
 
-static void dsleep(size_t d){  usleep(d*10000);  }
+static void dsleep(size_t d){  ::usleep(d*10000);  }
 
 #define RS_RESET TIOCM_DTR
 #define RS_EN    TIOCM_RTS

@@ -12,9 +12,10 @@ bool _log = false;
 std::string hexfile;
 
 
-void help( const char *argv0 )
+const char *__argv0="pic32uploader";
+void help()
 {
-  fputs( argv0, stderr );
+  fputs( __argv0, stderr );
   fputs("\n"
         "\t [--115200|--500kbit|--1Mbit]\n"
         "\t  --load <file.hex>\n"
@@ -25,10 +26,11 @@ void help( const char *argv0 )
 
 int main( int argc, char const * argv[] )
 {
+  __argv0 = argv[0];
   try
   {
     if(argc < 2)
-      help(argv[0]);
+      help();
 
     setlinebuf(stdout);
     setlinebuf(stderr);
@@ -48,6 +50,12 @@ int main( int argc, char const * argv[] )
         {
           speed = 1000000;
           puts("1Mbit");
+        }
+        else
+        if(!strcmp(argv[arg], "--2Mbit"))
+        {
+          speed = 2000000;
+          puts("2Mbit");
         }
         else
         if( isdigit(argv[arg][2]) )
@@ -75,7 +83,7 @@ int main( int argc, char const * argv[] )
         }
         else
         {
-          help(argv[0]);
+          help();
         }
       }
       else
@@ -83,7 +91,7 @@ int main( int argc, char const * argv[] )
         if( hexfile.empty() )
           hexfile = argv[arg];
         else
-          help(argv[0]);
+          help();
       }
       arg++;
     }
@@ -98,7 +106,7 @@ int main( int argc, char const * argv[] )
     printf( "Uploading file:\t%s\n", hexfile.c_str() );
     bus.loadFile( hexfile );
 
-    if( _log )
+    if( _log && bus.fd != -1 )
     {
       bus.bootDisable();
       bus.logEnable();
@@ -107,10 +115,7 @@ int main( int argc, char const * argv[] )
     }
 
     if( bus.fd >= 0 )
-    {
-      bus.bootDisable();
       bus.close();
-    }
 
     return 0;
   }
